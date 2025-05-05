@@ -3,6 +3,7 @@ let roundTime = 1;
 let bufferTime = 2;
 let currentlyBlank = false;
 let panoramaFound = false;
+let resultLayoutFound = false;
 //set roundTime in seconds
 
 // function SearchingInterval() {
@@ -34,7 +35,8 @@ function blink(panorama) {
 const mutation = new MutationObserver((mutationsList, observer) => {
 	const panorama = document.querySelector("[data-qa=panorama]");
 	const resultLayout = document.querySelector('[class*="result-layout"]');
-	if (panorama && !panoramaFound) {
+	if (panorama && !panoramaFound && !resultLayout) {
+		resultLayoutFound = false;
 		panoramaFound = true;
 		console.log("panorama znaleziona");
 		blank(panorama);
@@ -48,6 +50,11 @@ const mutation = new MutationObserver((mutationsList, observer) => {
 	if (!panorama && panoramaFound) {
 		console.log("panorama not found, setting panoramaFound to false");
 		panoramaFound = false;
+	}
+	if (resultLayout && !resultLayoutFound) {
+		resultLayoutFound = true;
+		panoramaFound = false;
+		console.log("reuslt layout found");
 	}
 });
 mutation.observe(document.body, { childList: true, subtree: true });
