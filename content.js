@@ -1,10 +1,20 @@
-document.addEventListener("DOMContentLoaded", () => {
-	console.log("dom loaded");
-});
+//blink mode geoguessr
+let roundTime = 1.5;
+//set roundTime in seconds
 
-let panorama = document.querySelector("[data-qa=panorama]");
-if (panorama) {
-	panorama.style.filter = "brightness(10%)";
-} else {
-	console.log("pus");
+const interval = setInterval(() => {
+	const panorama = document.querySelector("[data-qa=panorama]");
+	if (panorama) {
+		clearInterval(interval);
+		setTimeout(() => {
+			blank(panorama);
+			console.log("wykonane");
+		}, roundTime * 1000);
+	}
+}, 1);
+
+function blank(panorama) {
+	panorama.style.filter = "brightness(0%)";
+	console.log("Panorama found and styled.");
+	return;
 }
