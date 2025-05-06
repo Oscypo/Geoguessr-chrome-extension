@@ -1,10 +1,13 @@
 //blink mode geoguessr
-let roundTime = 1;
+let roundTime = {
+	get: () => {
+		return parseFloat(localStorage.getItem("roundTime")) || 0.5;
+	},
+};
 let bufferTime = 2;
 let currentlyBlank = false;
 let panoramaFound = false;
 let resultLayoutFound = false;
-//set roundTime in seconds
 
 function injectMenu(place) {
 	// Create outer container (main box)
@@ -31,7 +34,6 @@ function injectMenu(place) {
 	innerContainer.style.maxWidth = "800px";
 	innerContainer.style.gap = "40px";
 	innerContainer.style.boxSizing = "border-box";
-
 	// Shared section style
 	const createSection = (titleText, inputs = []) => {
 		const section = document.createElement("div");
@@ -74,7 +76,7 @@ function injectMenu(place) {
 	roundInput.type = "number";
 	roundInput.id = "roundTime";
 	roundInput.value = "0.5";
-	roundInput.min = "1";
+	roundInput.min = "0.1";
 	roundInput.style.width = "60px";
 
 	const leftBox = createSection("Blink Settings", [
@@ -119,10 +121,11 @@ function blinkModeFunctionality() {
 		console.log("panorama znaleziona");
 		blank(panorama);
 		setTimeout(() => {
+			console.log(`blinked for ${roundTime.get()} seconds`);
 			blink(panorama);
 			setTimeout(() => {
 				blank(panorama);
-			}, roundTime * 1000);
+			}, roundTime.get() * 1000);
 		}, bufferTime * 1000);
 	}
 	if (!panorama && panoramaFound) {
@@ -135,12 +138,44 @@ function blinkModeFunctionality() {
 		console.log("reuslt layout found");
 	}
 }
-
-const mutation = new MutationObserver((mutationsList, observer) => {
-	blinkModeFunctionality();
+function UIfunctionality() {
 	let blockRoot = document.querySelector('[class*="map-block_root"]');
 	if (blockRoot && !document.querySelector("#blink-settings")) {
 		injectMenu(blockRoot);
 	}
+	if (document.querySelector("#blink-settings")) {
+		// Retrieve state of blinkMode from localStorage
+		const blinkMode = localStorage.getItem("blinkMode");
+		if (blinkMode == "true") {
+			document.querySelector("#blinkMode").checked = true;
+		} else if (blinkMode == "false") {
+			document.querySelector("#blinkMode").checked = false;
+		}
+
+		// Retrieve state of roundTime from localStorage
+		const roundTimeValue = localStorage.getItem("roundTime");
+		if (roundTimeValue) {
+			document.querySelector("#roundTime").value = roundTimeValue;
+		}
+
+		document.querySelector("#roundTime").addEventListener("input", () => {
+			localStorage.setItem(
+				"roundTime",
+				document.querySelector("#roundTime").value
+			);
+		});
+		document.querySelector("#blinkMode").addEventListener("change", () => {
+			if (document.querySelector("#blinkMode").checked) {
+				localStorage.setItem("blinkMode", "true");
+			} else {
+				localStorage.setItem("blinkMode", "false");
+			}
+		});
+	}
+}
+
+const mutation = new MutationObserver((mutationsList, observer) => {
+	localStorage.getItem("blinkMode") == "true" ? blinkModeFunctionality() : "";
+	UIfunctionality();
 });
 mutation.observe(document.body, { childList: true, subtree: true });
