@@ -15,12 +15,12 @@ function injectMenu(place) {
 	outerContainer.id = "blink-settings";
 	outerContainer.style.width = "100%";
 	outerContainer.style.maxHeight = "400px";
-	outerContainer.style.background = "#ffffff";
+	outerContainer.style.background = "rgb(0, 0, 0, 0.2)";
 	outerContainer.style.borderRadius = "12px";
 	outerContainer.style.boxShadow = "0 4px 16px rgba(0, 0, 0, 0.15)";
 	outerContainer.style.margin = "20px 0";
 	outerContainer.style.fontFamily = "Arial, sans-serif";
-	outerContainer.style.color = "black";
+	outerContainer.style.color = "white";
 	outerContainer.style.display = "flex";
 	outerContainer.style.justifyContent = "center";
 	outerContainer.style.alignItems = "center";
